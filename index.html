@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficar Limpo & EducaDQ - Capacitação Profissional em Dependência Química</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary-dark: #0d1b2a;
+            --primary-blue: #1b2838;
+            --accent-blue: #5dade2;
+            --light-blue: #85c1e9;
+            --cyan: #00d4ff;
+            --white: #ffffff;
+            --gray: #b0bec5;
+            --green: #25d366;
+            --gold: #f39c12;
+            --gradient-bg: linear-gradient(135deg, #0d1b2a 0%, #1b2838 50%, #1a3a5c 100%);
+        }
+
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--primary-dark);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        /* Loading Screen */
+        .loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+        .loader.hidden { opacity: 0; pointer-events: none; }
+        .loader-content { text-align: center; }
+        .loader-spinner {
+            width: 60px; height: 60px;
+            border: 3px solid rgba(93,173,226,0.2);
+            border-top-color: var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed; top: 0; left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--cyan));
+            z-index: 9999;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px var(--accent-blue);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed; top: 0; left: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            background: rgba(13, 27, 42, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(93,173,226,0.1);
+        }
+        nav.scrolled {
+            padding: 0.7rem 5%;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+        .nav-logo svg { width: 40px; height: 40px; }
+        .nav-logo-text { font-weight: 700; font-size: 1.1rem; color: var(--white); }
+        .nav-logo-text span { color: var(--accent-blue); }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0;
+            width: 0; height: 2px;
+            background: var(--accent-blue);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: var(--accent-blue); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: var(--accent-blue);
+            color: var(--white) !important;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600 !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: var(--cyan); transform: translateY(-2px); }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .hamburger span {
+            width: 25px; height: 2px;
+            background: var(--white);
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 8rem 5% 4rem;
+            overflow: hidden;
+        }
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+        .hero-bg svg { width: 100%; height: 100%; }
+        .hero-particles {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            animation: float-particle 15s infinite;
+            opacity: 0.3;
+        }
+        @keyframes float-particle {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(93,173,226,0.1);
+            border: 1px solid rgba(93,173,226,0.3);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+            margin-bottom: 2rem;
+            animation: fadeInDown 1s ease;
+        }
+        .hero-badge .dot {
+            width: 8px; height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .hero h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--accent-blue), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: var(--light-blue);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.8s both;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--cyan));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(93,173,226,0.3);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(93,173,226,0.5);
+        }
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+            background: rgba(93,173,226,0.1);
+            transform: translateY(-3px);
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 1s both;
+        }
+        .stat-item { text-align: center; }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+            display: block;
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Styles */
+        section { padding: 6rem 5%; position: relative; }
+        .section-container { max-width: 1400px; margin: 0 auto; }
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .section-tag {
+            display: inline-block;
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .section-subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* About Section */
+        .about {
+            background: linear-gradient(180deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .about-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, var(--accent-blue), var(--cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .about-image svg {
+            width: 80%;
+            height: 80%;
+            opacity: 0.9;
+        }
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: rotate 10s linear infinite;
+        }
+        @keyframes rotate { to { transform: rotate(360deg); } }
+        .about-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        .about-content p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+        }
+        .about-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .about-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem;
+            background: rgba(93,173,226,0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(93,173,226,0.1);
+        }
+        .about-feature-icon {
+            width: 40px; height: 40px;
+            background: rgba(93,173,226,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .about-feature-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Courses Section */
+        .courses {
+            background: var(--primary-blue);
+            position: relative;
+        }
+        .courses::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(93,173,226,0.1) 0%, transparent 50%);
+        }
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .course-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(93,173,226,0.15);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--cyan));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        .course-card:hover::before { transform: scaleX(1); }
+        .course-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 60px rgba(93,173,226,0.2);
+            background: rgba(93,173,226,0.05);
+        }
+        .course-number {
+            position: absolute;
+            top: 1.5rem; right: 1.5rem;
+            font-size: 3rem;
+            font-weight: 900;
+            color: rgba(93,173,226,0.1);
+            line-height: 1;
+        }
+        .course-icon {
+            width: 70px; height: 70px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--cyan));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.4s;
+        }
+        .course-card:hover .course-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+        .course-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        .course-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+        .course-link {
+            color: var(--accent-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s;
+        }
+        .course-link:hover { gap: 1rem; }
+
+        /* Combo Section */
+        .combo {
+            background: linear-gradient(135deg, #1a3a5c 0%, #0d1b2a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .combo::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -50%;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(243,156,18,0.1) 0%, transparent 70%);
+        }
+        .combo-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .combo-card {
+            background: linear-gradient(135deg, rgba(243,156,18,0.1), rgba(93,173,226,0.1));
+            border: 2px solid rgba(243,156,18,0.3);
+            border-radius: 30px;
+            padding: 4rem 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .combo-badge {
+            position: absolute;
+            top: 2rem; right: -3rem;
+            background: var(--gold);
+            color: var(--primary-dark);
+            padding: 0.5rem 4rem;
+            font-weight: 800;
+            font-size: 0.85rem;
+            transform: rotate(45deg);
+            letter-spacing: 1px;
+        }
+        .combo-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .combo-card h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--gold);
+        }
+        .combo-card > p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .combo-includes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .combo-item {
+            background: rgba(0,0,0,0.2);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(243,156,18,0.2);
+        }
+        .combo-item-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .combo-item h4 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        .combo-item p {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* Benefits Section */
+        .benefits {
+            background: var(--primary-dark);
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .benefit-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(93,173,226,0.1);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s;
+            position: relative;
+        }
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-blue);
+            background: rgba(93,173,226,0.05);
+        }
+        .benefit-icon {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--cyan));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(93,173,226,0.3);
+        }
+        .benefit-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+        .benefit-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Methodology Section */
+        .methodology {
+            background: linear-gradient(180deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+        }
+        .methodology-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .methodology-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0; bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent-blue), var(--cyan));
+            transform: translateX(-50%);
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        .timeline-item:nth-child(odd) { flex-direction: row-reverse; }
+        .timeline-content {
+            width: 45%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(93,173,226,0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        .timeline-content:hover {
+            border-color: var(--accent-blue);
+            transform: scale(1.05);
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--cyan));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            z-index: 1;
+            box-shadow: 0 0 0 10px var(--primary-blue);
+        }
+        .timeline-content h4 {
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .timeline-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background: var(--primary-dark);
+            position: relative;
+            overflow: hidden;
+        }
+        .testimonials::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(93,173,226,0.1) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .testimonial-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(93,173,226,0.15);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+        .testimonial-stars {
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .testimonial-text {
+            color: var(--gray);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .testimonial-avatar {
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--cyan));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .testimonial-name { font-weight: 600; }
+        .testimonial-role {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* FAQ Section */
+        .faq {
+            background: var(--primary-blue);
+        }
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(93,173,226,0.15);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .faq-item:hover { border-color: var(--accent-blue); }
+        .faq-question {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.05rem;
+            user-select: none;
+        }
+        .faq-icon {
+            width: 30px; height: 30px;
+            background: rgba(93,173,226,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+        .faq-item.active .faq-icon { transform: rotate(45deg); }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding: 0 2rem 1.5rem;
+        }
+        .faq-answer p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Partners Section */
+        .partners {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+        }
+        .partners-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .partners-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .partners-info h2 span { color: var(--accent-blue); }
+        .partners-info p {
+            color: var(--gray);
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+        .partner-benefits {
+            list-style: none;
+        }
+        .partner-benefits li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(93,173,226,0.1);
+        }
+        .partner-benefits li:last-child { border-bottom: none; }
+        .partner-check {
+            width: 30px; height: 30px;
+            background: rgba(37,211,102,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green);
+            flex-shrink: 0;
+        }
+        .partners-visual {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .partners-logo-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            align-items: center;
+        }
+        .partner-logo-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(93,173,226,0.3);
+            border-radius: 20px;
+            padding: 2rem 3rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .partner-logo-box:hover {
+            border-color: var(--accent-blue);
+            transform: scale(1.05);
+        }
+        .partner-logo-box svg { width: 60px; height: 60px; margin-bottom: 0.5rem; }
+        .partner-logo-box h4 { font-size: 1.1rem; }
+        .partner-logo-box p {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        .partners-arrow {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            animation: pulse-arrow 2s infinite;
+        }
+        @keyframes pulse-arrow {
+            0%, 100% { opacity: 1; transform: translateY(0); }
+            50% { opacity: 0.5; transform: translateY(5px); }
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--cyan) 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 6rem 5%;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+        .cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .cta-content h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+        .cta-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: rgba(255,255,255,0.9);
+        }
+        .whatsapp-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.3rem 3rem;
+            background: var(--green);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .whatsapp-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .whatsapp-button svg { width: 24px; height: 24px; }
+
+        /* Footer */
+        footer {
+            background: var(--primary-dark);
+            padding: 4rem 5% 2rem;
+            border-top: 1px solid rgba(93,173,226,0.1);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+        }
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .footer-brand h3 span { color: var(--accent-blue); }
+        .footer-brand p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+        .footer-social a {
+            width: 40px; height: 40px;
+            background: rgba(93,173,226,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .footer-social a:hover {
+            background: var(--accent-blue);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+        .footer-column h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+        }
+        .footer-column ul {
+            list-style: none;
+        }
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        .footer-column ul a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .footer-column ul a:hover { color: var(--accent-blue); }
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(93,173,226,0.1);
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        /* Floating WhatsApp Button */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 2rem; right: 2rem;
+            width: 60px; height: 60px;
+            background: var(--green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(37,211,102,0.4);
+            z-index: 999;
+            transition: all 0.3s;
+            animation: pulse-whatsapp 2s infinite;
+        }
+        .floating-whatsapp:hover {
+            transform: scale(1.1);
+        }
+        .floating-whatsapp svg { width: 30px; height: 30px; }
+        @keyframes pulse-whatsapp {
+            0%, 100% { box-shadow: 0 10px 30px rgba(37,211,102,0.4); }
+            50% { box-shadow: 0 10px 30px rgba(37,211,102,0.4), 0 0 0 15px rgba(37,211,102,0.1); }
+        }
+
+        /* Music Player */
+        .music-player {
+            position: fixed;
+            bottom: 2rem; left: 2rem;
+            background: rgba(13,27,42,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(93,173,226,0.2);
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 999;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .music-player:hover { border-color: var(--accent-blue); }
+        .music-icon {
+            width: 35px; height: 35px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--cyan));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spin 3s linear infinite;
+            animation-play-state: paused;
+        }
+        .music-player.playing .music-icon { animation-play-state: running; }
+        .music-info { font-size: 0.8rem; }
+        .music-title { font-weight: 600; font-size: 0.85rem; }
+        .music-artist { color: var(--gray); font-size: 0.75rem; }
+
+        /* Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .about-grid, .partners-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .methodology-timeline::before { left: 30px; }
+            .timeline-item, .timeline-item:nth-child(odd) {
+                flex-direction: row;
+                padding-left: 80px;
+            }
+            .timeline-content { width: 100%; }
+            .timeline-dot {
+                left: 30px;
+                transform: translateX(-50%);
+            }
+            .combo-badge {
+                top: 1rem; right: -2.5rem;
+                padding: 0.4rem 3rem;
+                font-size: 0.75rem;
+            }
+        }
+        @media (max-width: 600px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .hero-stats { gap: 1.5rem; }
+            .stat-number { font-size: 2rem; }
+            .music-player { display: none; }
+            .combo-card { padding: 2.5rem 1.5rem; }
+            .combo-card h2 { font-size: 1.8rem; }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(13,27,42,0.98);
+            backdrop-filter: blur(20px);
+            z-index: 998;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .mobile-menu.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .mobile-menu a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .mobile-menu a:hover { color: var(--accent-blue); }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p style="color: var(--accent-blue); font-weight: 600;">Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <svg viewBox="0 0 60 60" fill="none">
+                    <circle cx="30" cy="30" r="28" fill="url(#navGrad)" opacity="0.2"/>
+                    <path d="M30 15 C25 20, 20 25, 20 32 C20 38, 24 42, 30 42 C36 42, 40 38, 40 32 C40 25, 35 20, 30 15Z" fill="#5dade2"/>
+                    <path d="M30 20 L30 35 M25 28 L30 33 L35 28" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="navGrad" x1="0" y1="0" x2="60" y2="60">
+                            <stop offset="0%" stop-color="#5dade2"/>
+                            <stop offset="100%" stop-color="#00d4ff"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="nav-logo-text">FICAR <span>LIMPO</span> & EducaDQ</div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#cursos">Cursos</a></li>
+                <li><a href="#combo">Combo</a></li>
+                <li><a href="#depoimentos">Depoimentos</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="#contato" class="nav-cta">Inscreva-se</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#inicio" onclick="closeMobile()">Início</a>
+        <a href="#sobre" onclick="closeMobile()">Sobre</a>
+        <a href="#cursos" onclick="closeMobile()">Cursos</a>
+        <a href="#combo" onclick="closeMobile()">Combo</a>
+        <a href="#depoimentos" onclick="closeMobile()">Depoimentos</a>
+        <a href="#faq" onclick="closeMobile()">FAQ</a>
+        <a href="#contato" onclick="closeMobile()">Inscreva-se</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="hero-bg">
+            <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                    <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#0d1b2a"/>
+                        <stop offset="50%" stop-color="#1b2838"/>
+                        <stop offset="100%" stop-color="#1a3a5c"/>
+                    </linearGradient>
+                    <radialGradient id="glow1" cx="20%" cy="30%">
+                        <stop offset="0%" stop-color="#5dade2" stop-opacity="0.3"/>
+                        <stop offset="100%" stop-color="#5dade2" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="glow2" cx="80%" cy="70%">
+                        <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.2"/>
+                        <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+                    </radialGradient>
+                </defs>
+                <rect width="1440" height="900" fill="url(#heroGrad)"/>
+                <circle cx="288" cy="270" r="400" fill="url(#glow1)"/>
+                <circle cx="1152" cy="630" r="350" fill="url(#glow2)"/>
+                <!-- Abstract shapes -->
+                <path d="M0 450 Q 360 350, 720 450 T 1440 450 L 1440 900 L 0 900 Z" fill="#1b2838" opacity="0.5"/>
+                <path d="M0 550 Q 360 450, 720 550 T 1440 550 L 1440 900 L 0 900 Z" fill="#0d1b2a" opacity="0.7"/>
+                <!-- Floating circles -->
+                <circle cx="200" cy="200" r="3" fill="#5dade2" opacity="0.5">
+                    <animate attributeName="cy" values="200;180;200" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="1200" cy="300" r="4" fill="#00d4ff" opacity="0.4">
+                    <animate attributeName="cy" values="300;280;300" dur="5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="800" cy="150" r="2" fill="#5dade2" opacity="0.6">
+                    <animate attributeName="cy" values="150;130;150" dur="3s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <div class="hero-particles" id="particles"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="dot"></span>
+                <span>OPORTUNIDADE DE CAPACITAÇÃO</span>
+            </div>
+            <h1>
+                CAPACITAÇÃO<br>
+                <span class="gradient-text">PROFISSIONAL</span>
+            </h1>
+            <p class="hero-subtitle">Invista no seu futuro.</p>
+            <p class="hero-description">
+                Cursos especializados para quem quer atuar ou se aprofundar no atendimento à dependência química, 
+                com foco em prática, ética e resultado. Formação que transforma vidas.
+            </p>
+            <div class="hero-buttons">
+                <a href="#cursos" class="btn-primary">
+                    <span>🎓</span> Ver Cursos
+                </a>
+                <a href="#contato" class="btn-secondary">
+                    <span>💬</span> Fale Conosco
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number" data-count="4">0</span>
+                    <span class="stat-label">Formações</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="500">0</span>
+                    <span class="stat-label">Alunos Formados</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="100">0</span>
+                    <span class="stat-label">% Online</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="98">0</span>
+                    <span class="stat-label">% Aprovação</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="sobre">
+        <div class="section-container">
+            <div class="about-grid">
+                <div class="about-image reveal">
+                    <svg viewBox="0 0 400 300" fill="none">
+                        <!-- Person silhouette with light -->
+                        <circle cx="200" cy="100" r="40" fill="rgba(255,255,255,0.9)"/>
+                        <path d="M140 280 Q140 180, 200 160 Q260 180, 260 280 Z" fill="rgba(255,255,255,0.8)"/>
+                        <!-- Light rays -->
+                        <g opacity="0.6">
+                            <line x1="200" y1="100" x2="100" y2="50" stroke="white" stroke-width="2"/>
+                            <line x1="200" y1="100" x2="300" y2="50" stroke="white" stroke-width="2"/>
+                            <line x1="200" y1="100" x2="80" y2="120" stroke="white" stroke-width="2"/>
+                            <line x1="200" y1="100" x2="320" y2="120" stroke="white" stroke-width="2"/>
+                            <line x1="200" y1="100" x2="150" y2="30" stroke="white" stroke-width="2"/>
+                            <line x1="200" y1="100" x2="250" y2="30" stroke="white" stroke-width="2"/>
+                        </g>
+                        <!-- Hands reaching up -->
+                        <path d="M160 200 Q150 170, 170 150" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <path d="M240 200 Q250 170, 230 150" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+                        <!-- Stars -->
+                        <circle cx="100" cy="80" r="3" fill="white"/>
+                        <circle cx="300" cy="90" r="2" fill="white"/>
+                        <circle cx="150" cy="60" r="2" fill="white"/>
+                        <circle cx="280" cy="70" r="3" fill="white"/>
+                    </svg>
+                </div>
+                <div class="about-content reveal">
+                    <span class="section-tag">Quem Somos</span>
+                    <h2>Formação que <span style="color: var(--accent-blue);">transforma</span> vidas</h2>
+                    <p>
+                        A <strong>Ficar Limpo</strong> em parceria com a <strong>EducaDQ</strong> oferece capacitação profissional 
+                        de excelência na área de dependência química, recuperação e família.
+                    </p>
+                    <p>
+                        Nossa missão é formar profissionais preparados para atuar com técnica, empatia e propósito, 
+                        gerando impacto real na vida das pessoas que buscam recuperação.
+                    </p>
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <div class="about-feature-icon"></div>
+                            <div class="about-feature-text">Foco em Prática</div>
+                        </div>
+                        <div class="about-feature">
+                            <div class="about-feature-icon">⚖️</div>
+                            <div class="about-feature-text">Ética Profissional</div>
+                        </div>
+                        <div class="about-feature">
+                            <div class="about-feature-icon">📈</div>
+                            <div class="about-feature-text">Resultados Reais</div>
+                        </div>
+                        <div class="about-feature">
+                            <div class="about-feature-icon">🤝</div>
+                            <div class="about-feature-text">Suporte Contínuo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section class="courses" id="cursos">
+        <div class="section-container">
+            <div class="section-header reveal">
+                <span class="section-tag">Nossas Formações</span>
+                <h2 class="section-title">Cursos Especializados</h2>
+                <p class="section-subtitle">Quer se preparar melhor para atuar na área de dependência química, recuperação e família?</p>
+            </div>
+            <div class="courses-grid">
+                <div class="course-card reveal">
+                    <span class="course-number">01</span>
+                    <div class="course-icon">👥</div>
+                    <h3>Monitor e Coordenador de Clínicas</h3>
+                    <p>Formação completa para liderar clínicas de reabilitação e comunidades terapêuticas com preparo e excelência.</p>
+                    <a href="#contato" class="course-link">Saiba mais →</a>
+                </div>
+                <div class="course-card reveal">
+                    <span class="course-number">02</span>
+                    <div class="course-icon">🧠</div>
+                    <h3>Terapeuta em Dependência Química</h3>
+                    <p>Atue com técnica, empatia e propósito no tratamento de dependentes químicos. Formação completa e prática.</p>
+                    <a href="#contato" class="course-link">Saiba mais →</a>
+                </div>
+                <div class="course-card reveal">
+                    <span class="course-number">03</span>
+                    <div class="course-icon">👨‍👩‍👧</div>
+                    <h3>Terapeuta em Codependência Familiar</h3>
+                    <p>Ajude famílias a reconstruírem seus laços e fortalecerem o processo de recuperação dos seus entes queridos.</p>
+                    <a href="#contato" class="course-link">Saiba mais →</a>
+                </div>
+                <div class="course-card reveal">
+                    <span class="course-number">04</span>
+                    <div class="course-icon">️</div>
+                    <h3>Prevenção à Recaída na Prática</h3>
+                    <p>Estratégias reais e eficazes para manter a recuperação e prevenir recaídas de forma profissional.</p>
+                    <a href="#contato" class="course-link">Saiba mais →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Combo Section -->
+    <section class="combo" id="combo">
+        <div class="combo-container">
+            <div class="combo-card reveal">
+                <div class="combo-badge">🔥 OFERTA ESPECIAL</div>
+                <div class="combo-icon">🏆</div>
+                <h2>COMBO COMPLETO</h2>
+                <p>Para quem quer aproveitar ao máximo e se tornar um profissional completo na área de dependência química</p>
+                <div class="combo-includes">
+                    <div class="combo-item">
+                        <div class="combo-item-icon">🎓</div>
+                        <h4>4 Formações</h4>
+                        <p>Todos os cursos inclusos</p>
+                    </div>
+                    <div class="combo-item">
+                        <div class="combo-item-icon">📚</div>
+                        <h4>Materiais Didáticos</h4>
+                        <p>Conteúdo completo</p>
+                    </div>
+                    <div class="combo-item">
+                        <div class="combo-item-icon">📹</div>
+                        <h4>Gravações</h4>
+                        <p>Acesso às aulas gravadas</p>
+                    </div>
+                    <div class="combo-item">
+                        <div class="combo-item-icon">📜</div>
+                        <h4>Certificação</h4>
+                        <p>Certificado em cada curso</p>
+                    </div>
+                </div>
+                <a href="#contato" class="btn-primary" style="background: linear-gradient(135deg, var(--gold), #e67e22);">
+                    <span>💰</span> Condição Especial para Parceiros
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="beneficios">
+        <div class="section-container">
+            <div class="section-header reveal">
+                <span class="section-tag">Por que nos escolher</span>
+                <h2 class="section-title">Benefícios Exclusivos</h2>
+                <p class="section-subtitle">Tudo que você precisa para uma formação de excelência</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card reveal">
+                    <div class="benefit-icon"></div>
+                    <h3>Aulas ao Vivo</h3>
+                    <p>Transmissões ao vivo pelo Google Meet com interação direta com os professores</p>
+                </div>
+                <div class="benefit-card reveal">
+                    <div class="benefit-icon">📚</div>
+                    <h3>Materiais Didáticos</h3>
+                    <p>Conteúdo completo e atualizado para apoiar seu aprendizado</p>
+                </div>
+                <div class="benefit-card reveal">
+                    <div class="benefit-icon">📋</div>
+                    <h3>Estudos de Casos</h3>
+                    <p>Análise de casos reais para aplicar o conhecimento na prática</p>
+                </div>
+                <div class="benefit-card reveal">
+                    <div class="benefit-icon">🎥</div>
+                    <h3>Gravações</h3>
+                    <p>Acesso às gravações das aulas para revisar quando quiser</p>
+                </div>
+                <div class="benefit-card reveal">
+                    <div class="benefit-icon">📜</div>
+                    <h3>Certificação</h3>
+                    <p>Certificado ao final de cada curso, reconhecido no mercado</p>
+                </div>
+                <div class="benefit-card reveal">
+                    <div class="benefit-icon">💻</div>
+                    <h3>100% Online</h3>
+                    <p>Estude de qualquer lugar, no seu ritmo e com flexibilidade total</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology Section -->
+    <section class="methodology" id="metodologia">
+        <div class="section-container">
+            <div class="section-header reveal">
+                <span class="section-tag">Como Funciona</span>
+                <h2 class="section-title">Nossa Metodologia</h2>
+                <p class="section-subtitle">Um processo estruturado para sua formação completa</p>
+            </div>
+            <div class="methodology-timeline">
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <h4>1. Inscrição</h4>
+                        <p>Escolha seu curso ou o combo completo e garanta sua vaga</p>
+                    </div>
+                    <div class="timeline-dot">1</div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <h4>2. Acesso ao Material</h4>
+                        <p>Receba todo o material didático e prepare-se para as aulas</p>
+                    </div>
+                    <div class="timeline-dot">2</div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <h4>3. Aulas ao Vivo</h4>
+                        <p>Participe das aulas interativas pelo Google Meet</p>
+                    </div>
+                    <div class="timeline-dot">3</div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <h4>4. Estudos de Casos</h4>
+                        <p>Aplique o conhecimento em situações reais da profissão</p>
+                    </div>
+                    <div class="timeline-dot">4</div>
+                </div>
+                <div class="timeline-item reveal">
+                    <div class="timeline-content">
+                        <h4>5. Certificação</h4>
+                        <p>Receba seu certificado e comece a atuar com confiança</p>
+                    </div>
+                    <div class="timeline-dot">5</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="depoimentos">
+        <div class="section-container">
+            <div class="section-header reveal">
+                <span class="section-tag">Depoimentos</span>
+                <h2 class="section-title">O que nossos alunos dizem</h2>
+                <p class="section-subtitle">Histórias reais de transformação profissional</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"A formação mudou completamente minha forma de atuar. Hoje me sinto muito mais preparada para ajudar pessoas em recuperação."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">MC</div>
+                        <div>
+                            <div class="testimonial-name">Maria Clara</div>
+                            <div class="testimonial-role">Terapeuta em Dependência Química</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"O combo completo vale muito a pena. Conteúdo rico, professores excelentes e suporte incrível durante todo o processo."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">JS</div>
+                        <div>
+                            <div class="testimonial-name">João Silva</div>
+                            <div class="testimonial-role">Monitor de Clínica</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card reveal">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"A metodologia prática faz toda a diferença. Os estudos de casos me prepararam para situações reais do dia a dia profissional."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">AS</div>
+                        <div>
+                            <div class="testimonial-name">Ana Santos</div>
+                            <div class="testimonial-role">Terapeuta Familiar</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="section-container">
+            <div class="section-header reveal">
+                <span class="section-tag">Dúvidas Frequentes</span>
+                <h2 class="section-title">Perguntas Frequentes</h2>
+                <p class="section-subtitle">Tire suas dúvidas sobre nossas formações</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item reveal">
+                    <div class="faq-question">
+                        <span>Como funcionam as aulas ao vivo?</span>
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>As aulas são transmitidas ao vivo pelo Google Meet, com interação direta com os professores. Todas as aulas são gravadas para você assistir quando quiser.</p>
+                    </div>
+                </div>
+                <div class="faq-item reveal">
+                    <div class="faq-question">
+                        <span>Preciso ter experiência prévia na área?</span>
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Não! Nossos cursos são desenvolvidos tanto para quem está começando quanto para quem quer se aprofundar. O conteúdo é progressivo e acessível.</p>
+                    </div>
+                </div>
+                <div class="faq-item reveal">
+                    <div class="faq-question">
+                        <span>O certificado é reconhecido?</span>
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sim! Nossos certificados são reconhecidos no mercado e comprovam sua capacitação profissional na área de dependência química.</p>
+                    </div>
+                </div>
+                <div class="faq-item reveal">
+                    <div class="faq-question">
+                        <span>Qual a condição especial para parceiros FicarLimpo?</span>
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Parceiros FicarLimpo têm acesso a condições especiais de pagamento e descontos exclusivos. Entre em contato pelo WhatsApp para saber mais.</p>
+                    </div>
+                </div>
+                <div class="faq-item reveal">
+                    <div class="faq-question">
+                        <span>Posso fazer apenas um curso ou preciso fazer o combo?</span>
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Você pode escolher fazer apenas um curso específico ou optar pelo combo completo com as 4 formações. O combo oferece melhor custo-benefício.</p>
+                    </div>
+                </div>
+                <div class="faq-item reveal">
+                    <div class="faq-question">
+                        <span>Como acesso o material didático?</span>
+                        <div class="faq-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Após a inscrição, você recebe acesso à plataforma com todo o material didático, incluindo apostilas, estudos de casos e materiais de apoio.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners Section -->
+    <section class="partners" id="parceiros">
+        <div class="section-container">
+            <div class="partners-content">
+                <div class="partners-info reveal">
+                    <span class="section-tag">Parceria Exclusiva</span>
+                    <h2>Condição especial para parceiros <span>FicarLimpo</span></h2>
+                    <p>
+                        Se você é parceiro FicarLimpo, tem acesso a condições exclusivas e descontos especiais 
+                        em todas as nossas formações. Uma oportunidade única para se capacitar com o melhor custo-benefício.
+                    </p>
+                    <ul class="partner-benefits">
+                        <li>
+                            <div class="partner-check">✓</div>
+                            <span>Descontos exclusivos em todos os cursos</span>
+                        </li>
+                        <li>
+                            <div class="partner-check">✓</div>
+                            <span>Condições especiais de pagamento</span>
+                        </li>
+                        <li>
+                            <div class="partner-check">✓</div>
+                            <span>Acesso prioritário às turmas</span>
+                        </li>
+                        <li>
+                            <div class="partner-check">✓</div>
+                            <span>Suporte dedicado para parceiros</span>
+                        </li>
+                        <li>
+                            <div class="partner-check">✓</div>
+                            <span>Material extra complementar</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="partners-visual reveal">
+                    <div class="partners-logo-container">
+                        <div class="partner-logo-box">
+                            <svg viewBox="0 0 60 60" fill="none">
+                                <circle cx="30" cy="30" r="28" fill="#5dade2" opacity="0.2"/>
+                                <path d="M30 15 C25 20, 20 25, 20 32 C20 38, 24 42, 30 42 C36 42, 40 38, 40 32 C40 25, 35 20, 30 15Z" fill="#5dade2"/>
+                            </svg>
+                            <h4>FICAR LIMPO</h4>
+                            <p>Dependência Química</p>
+                        </div>
+                        <div class="partners-arrow">↓</div>
+                        <div class="partner-logo-box">
+                            <svg viewBox="0 0 60 60" fill="none">
+                                <circle cx="30" cy="30" r="28" fill="#00d4ff" opacity="0.2"/>
+                                <path d="M20 30 L27 37 L40 23" stroke="#00d4ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <h4>EducaDQ</h4>
+                            <p>Formação que Transforma</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contato">
+        <div class="cta-content reveal">
+            <h2>Capacitação que gera<br>impacto real na vida das pessoas</h2>
+            <p>GARANTA SUA VAGA e faça parte dessa transformação. Quer saber qual curso combina mais com seu objetivo? Me chama no privado!</p>
+            <a href="https://wa.me/5500000000000?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20as%20formações%20EducaDQ" class="whatsapp-button" target="_blank">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                </svg>
+                <span>Fale Conosco no WhatsApp</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>FICAR <span>LIMPO</span> & EducaDQ</h3>
+                <p>Transformando vidas através da educação e do tratamento. Formação profissional de excelência na área de dependência química.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="Facebook">📘</a>
+                    <a href="#" aria-label="YouTube">📺</a>
+                    <a href="#" aria-label="WhatsApp">💬</a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Cursos</h4>
+                <ul>
+                    <li><a href="#cursos">Monitor e Coordenador</a></li>
+                    <li><a href="#cursos">Terapeuta em DQ</a></li>
+                    <li><a href="#cursos">Codependência Familiar</a></li>
+                    <li><a href="#cursos">Prevenção à Recaída</a></li>
+                    <li><a href="#combo">Combo Completo</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Institucional</h4>
+                <ul>
+                    <li><a href="#sobre">Sobre Nós</a></li>
+                    <li><a href="#metodologia">Metodologia</a></li>
+                    <li><a href="#depoimentos">Depoimentos</a></li>
+                    <li><a href="#parceiros">Parceiros</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Contato</h4>
+                <ul>
+                    <li><a href="#contato">WhatsApp</a></li>
+                    <li><a href="#">Email</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">Facebook</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Ficar Limpo & EducaDQ. Todos os direitos reservados. | Formação que transforma vidas.</p>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp -->
+    <a href="https://wa.me/5500000000000?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20as%20formações%20EducaDQ" class="floating-whatsapp" target="_blank" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+    </a>
+
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer">
+        <div class="music-icon"></div>
+        <div class="music-info">
+            <div class="music-title">Deus de Obras Completas</div>
+            <div class="music-artist">Kemilly Santos · Todah Music</div>
+        </div>
+    </div>
+
+    <script>
+        // Loader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 800);
+        });
+
+        // Scroll Indicator
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            scrollIndicator.style.width = scrollPercent + '%';
+
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            if (scrollTop > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        hamburger.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+        function closeMobile() {
+            mobileMenu.classList.remove('active');
+        }
+
+        // Intersection Observer for reveal animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Counter Animation
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.stat-number');
+                    counters.forEach(counter => {
+                        const target = parseInt(counter.getAttribute('data-count'));
+                        const duration = 2000;
+                        const step = target / (duration / 16);
+                        let current = 0;
+                        const timer = setInterval(() => {
+                            current += step;
+                            if (current >= target) {
+                                counter.textContent = target + (target === 100 || target === 98 ? '%' : '+');
+                                clearInterval(timer);
+                            } else {
+                                counter.textContent = Math.floor(current);
+                            }
+                        }, 16);
+                    });
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const heroStats = document.querySelector('.hero-stats');
+        if (heroStats) counterObserver.observe(heroStats);
+
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const isActive = item.classList.contains('active');
+                
+                // Close all
+                document.querySelectorAll('.faq-item').forEach(faq => {
+                    faq.classList.remove('active');
+                });
+                
+                // Open clicked if wasn't active
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    const offset = 80;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Create particles in hero
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Music Player Toggle
+        const musicPlayer = document.getElementById('musicPlayer');
+        let isPlaying = false;
+        musicPlayer.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            musicPlayer.classList.toggle('playing', isPlaying);
+            if (isPlaying) {
+                musicPlayer.querySelector('.music-title').textContent = '▶ Tocando...';
+            } else {
+                musicPlayer.querySelector('.music-title').textContent = 'Deus de Obras Completas';
+            }
+        });
+
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const heroContent = document.querySelector('.hero-content');
+            if (heroContent && scrolled < window.innerHeight) {
+                heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
+                heroContent.style.opacity = 1 - (scrolled / window.innerHeight);
+            }
+        });
+
+        // Add hover effect to course cards with tilt
+        document.querySelectorAll('.course-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+
+        // Dynamic greeting in console
+        const hour = new Date().getHours();
+        let greeting = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
+        console.log(`%c${greeting}! Bem-vindo à Ficar Limpo & EducaDQ`, 'color: #5dade2; font-size: 16px; font-weight: bold;');
+        console.log('%cFormação que transforma vidas 🌿', 'color: #85c1e9; font-size: 12px;');
+    </script>
+</body>
+</html>
